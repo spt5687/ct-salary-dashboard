@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CT Salary Dashboard</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --ink: #111827;
+      --muted: #64748b;
+      --line: #dbe3ef;
+      --soft: #eef3f8;
+      --brand: #172033;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --warning-bg: #fffbeb;
+      --warning-border: #fde68a;
+      --warning-text: #92400e;
+      --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.45;
+    }
+
+    .page {
+      width: min(1320px, calc(100% - 32px));
+      margin: 24px auto 48px;
+    }
+
+    .hero {
+      background: var(--brand);
+      color: white;
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #cbd5e1;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p.description {
+      max-width: 880px;
+      color: #dbe3ef;
+      margin-bottom: 0;
+      font-size: 0.98rem;
+    }
+
+    .hero-badge {
+      min-width: 210px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 14px 16px;
+    }
+
+    .hero-badge span {
+      display: block;
+      color: #cbd5e1;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .hero-badge strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 1.1rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 380px minmax(0, 1fr);
+      gap: 22px;
+      margin-top: 22px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .inputs-panel {
+      position: sticky;
+      top: 18px;
+      align-self: start;
+    }
+
+    .helper {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 18px;
+    }
+
+    .input-grid { display: grid; gap: 14px; }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.84rem;
+      color: #334155;
+      font-weight: 700;
+    }
+
+    input, select {
+      width: 100%;
+      margin-top: 6px;
+      border: 1px solid #cbd5e1;
+      background: white;
+      color: var(--ink);
+      border-radius: 12px;
+      padding: 10px 11px;
+      font: inherit;
+      font-size: 0.94rem;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .field-note {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 500;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.1s ease, opacity 0.1s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+
+    .primary { background: var(--accent); color: white; }
+    .secondary { background: var(--soft); color: #1e293b; }
+
+    .dashboard-main { min-width: 0; display: grid; gap: 22px; }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .metric-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+      min-height: 122px;
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .metric-value {
+      font-size: clamp(1.45rem, 2vw, 2rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      margin-bottom: 5px;
+    }
+
+    .metric-note { color: var(--muted); font-size: 0.86rem; margin: 0; }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      background: var(--soft);
+      color: #334155;
+      font-size: 0.84rem;
+      font-weight: 700;
+      padding: 7px 11px;
+      white-space: nowrap;
+    }
+
+    .chart-wrap {
+      width: 100%;
+      min-height: 380px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border: 1px solid #e5edf5;
+      overflow: hidden;
+    }
+
+    svg { display: block; width: 100%; height: auto; }
+
+    .tables {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+
+    .table-wrap { overflow-x: auto; margin-top: 14px; }
+
+    table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th {
+      text-align: left;
+      color: var(--muted);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--line);
+      padding: 10px 12px;
+      white-space: nowrap;
+    }
+
+    td {
+      border-bottom: 1px solid #edf2f7;
+      padding: 11px 12px;
+      vertical-align: top;
+      white-space: nowrap;
+    }
+
+    td:first-child { font-weight: 700; }
+    .right { text-align: right; }
+    .total-row td { border-bottom: 0; font-weight: 900; padding-top: 14px; }
+
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .note-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px;
+      color: #475569;
+      font-size: 0.9rem;
+    }
+
+    .note-box strong { color: var(--ink); }
+
+    .warning {
+      margin-top: 16px;
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 1100px) {
+      .layout, .tables { grid-template-columns: 1fr; }
+      .inputs-panel { position: static; }
+      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 760px) {
+      .page { width: min(100% - 18px, 1320px); margin-top: 9px; }
+      .hero { grid-template-columns: 1fr; padding: 20px; }
+      .metric-grid, .notes-grid, .two-col, .actions { grid-template-columns: 1fr; }
+      .section-head { display: block; }
+      .pill { margin-top: 8px; }
+    }
+
+    @media print {
+      body { background: white; }
+      .page { width: 100%; margin: 0; }
+      .inputs-panel, .actions, button { display: none !important; }
+      .hero, .panel, .metric-card { box-shadow: none; }
+      .layout, .tables, .metric-grid, .notes-grid { display: block; }
+      .panel, .metric-card { break-inside: avoid; margin-bottom: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Salary Projection Tool</p>
+        <h1>CT COLA, STEP, and Retroactive Pay Dashboard</h1>
+        <p class="description">
+          Enter the current annual salary before delayed increases. The model compounds COLA and STEP increases,
+          calculates the corrected salary, estimates gross retroactive pay, and projects future salary growth.
+        </p>
+      </div>
+      <div class="hero-badge">
+        <span>Retro Payout Date</span>
+        <strong id="retroPayoutBadge">Aug 12, 2026</strong>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="panel inputs-panel">
+        <h2>Inputs</h2>
+        <p class="helper">Use only the fields needed to calculate the salary schedule and retroactive estimate. Rates are entered as percentages.</p>
+
+        <div class="input-grid">
+          <label>
+            Current annual salary before delayed raises
+            <input id="baseSalary" type="number" min="0" step="100" value="104000" />
+            <span class="field-note">Example: 104000</span>
+          </label>
+
+          <label>
+            Quick salary preset
+            <select id="salaryPreset">
+              <option value="">Choose a preset, or type salary above</option>
+              <option value="75000">$75,000</option>
+              <option value="85000">$85,000</option>
+              <option value="95000">$95,000</option>
+              <option value="104000">$104,000</option>
+              <option value="115000">$115,000</option>
+              <option value="125000">$125,000</option>
+              <option value="135000">$135,000</option>
+            </select>
+          </label>
+
+          <div class="two-col">
+            <label>
+              COLA rate
+              <input id="colaRate" type="number" min="0" step="0.1" value="2.5" />
+              <span class="field-note">Percent</span>
+            </label>
+            <label>
+              STEP rate
+              <input id="stepRate" type="number" min="0" step="0.1" value="3.0" />
+              <span class="field-note">Percent</span>
+            </label>
+          </div>
+
+          <label>
+            First delayed COLA effective date
+            <input id="firstColaDate" type="date" value="2025-07-01" />
+          </label>
+
+          <label>
+            First delayed STEP effective date
+            <input id="firstStepDate" type="date" value="2026-01-01" />
+          </label>
+
+          <label>
+            Corrected salary reflected in payroll
+            <input id="correctionDate" type="date" value="2026-06-12" />
+          </label>
+
+          <label>
+            Retroactive lump-sum payout date
+            <input id="retroPayoutDate" type="date" value="2026-08-12" />
+          </label>
+
+          <div class="two-col">
+            <label>
+              Projection end year
+              <input id="endYear" type="number" min="2026" step="1" value="2029" />
+            </label>
+            <label>
+              Days per year
+              <input id="daysPerYear" type="number" min="1" step="1" value="365" />
+              <span class="field-note">365 default</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="recalculateBtn" type="button">Recalculate</button>
+          <button class="secondary" id="printBtn" type="button">Print / Save PDF</button>
+          <button class="secondary" id="csvScheduleBtn" type="button">Download Schedule CSV</button>
+          <button class="secondary" id="csvRetroBtn" type="button">Download Retro CSV</button>
+        </div>
+
+        <div class="warning">
+          This is an unofficial gross estimate. Exact payroll results may differ based on pay-period calendars, workday rules, bargaining unit provisions, deductions, taxes, and system rounding.
+        </div>
+      </aside>
+
+      <main class="dashboard-main">
+        <section class="metric-grid" aria-label="Summary metrics">
+          <div class="metric-card">
+            <div class="metric-label">Starting Salary</div>
+            <div class="metric-value" id="startingSalaryMetric">$104,000</div>
+            <p class="metric-note">Input salary before delayed increases</p>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Corrected Salary</div>
+            <div class="metric-value" id="correctedSalaryMetric">$109,798</div>
+            <p class="metric-note" id="correctedSalaryNote">As of Jun 12, 2026</p>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Estimated Gross Retro</div>
+            <div class="metric-value" id="retroTotalMetric">$3,884.04</div>
+            <p class="metric-note" id="retroTotalNote">Through Jun 11, 2026</p>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Projected Ending Salary</div>
+            <div class="metric-value" id="endingSalaryMetric">$129,205</div>
+            <p class="metric-note" id="endingSalaryNote">Through 2029</p>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <h2>Salary Growth Projection</h2>
+              <p class="helper">Compounded COLA and STEP increases over time.</p>
+            </div>
+            <span class="pill" id="nextRaisePill">Next raise: COLA on Jul 1, 2026</span>
+          </div>
+          <div class="chart-wrap" id="chartContainer" aria-label="Salary growth chart"></div>
+        </section>
+      </main>
+    </div>
+
+    <section class="tables" style="margin-top: 22px;">
+      <div class="panel">
+        <h2>Retroactive Pay Breakdown</h2>
+        <p class="helper">Gross estimate comparing the original salary against the corrected compounded salary due for each retroactive period.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Retro Period</th>
+                <th class="right">Days</th>
+                <th>Raise</th>
+                <th class="right">Corrected Salary</th>
+                <th class="right">Annual Difference</th>
+                <th class="right">Gross Retro</th>
+              </tr>
+            </thead>
+            <tbody id="retroTableBody"></tbody>
+            <tfoot id="retroTableFoot"></tfoot>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Compounded Raise Schedule</h2>
+        <p class="helper">Each raise applies to the salary produced by the prior raise, not the original salary.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Effective Date</th>
+                <th>Type</th>
+                <th class="right">Rate</th>
+                <th class="right">Salary Before</th>
+                <th class="right">Increase</th>
+                <th class="right">Salary After</th>
+              </tr>
+            </thead>
+            <tbody id="scheduleTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+      <h2>Interpretation Notes</h2>
+      <div class="notes-grid">
+        <div class="note-box"><strong>Use this as a gross estimate.</strong> Taxes, retirement deductions, benefits, union dues, and other payroll adjustments are not included.</div>
+        <div class="note-box"><strong>Payroll precision may vary.</strong> Exact results may use pay-period dates, workdays, check dates, or payroll-system-specific rounding.</div>
+        <div class="note-box"><strong>Best-practice upgrade.</strong> Add the official payroll calendar when available to calculate retroactive pay by exact pay period rather than calendar days.</div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const els = {
+      baseSalary: document.getElementById("baseSalary"),
+      salaryPreset: document.getElementById("salaryPreset"),
+      colaRate: document.getElementById("colaRate"),
+      stepRate: document.getElementById("stepRate"),
+      firstColaDate: document.getElementById("firstColaDate"),
+      firstStepDate: document.getElementById("firstStepDate"),
+      correctionDate: document.getElementById("correctionDate"),
+      retroPayoutDate: document.getElementById("retroPayoutDate"),
+      endYear: document.getElementById("endYear"),
+      daysPerYear: document.getElementById("daysPerYear"),
+      retroPayoutBadge: document.getElementById("retroPayoutBadge"),
+      startingSalaryMetric: document.getElementById("startingSalaryMetric"),
+      correctedSalaryMetric: document.getElementById("correctedSalaryMetric"),
+      correctedSalaryNote: document.getElementById("correctedSalaryNote"),
+      retroTotalMetric: document.getElementById("retroTotalMetric"),
+      retroTotalNote: document.getElementById("retroTotalNote"),
+      endingSalaryMetric: document.getElementById("endingSalaryMetric"),
+      endingSalaryNote: document.getElementById("endingSalaryNote"),
+      nextRaisePill: document.getElementById("nextRaisePill"),
+      chartContainer: document.getElementById("chartContainer"),
+      retroTableBody: document.getElementById("retroTableBody"),
+      retroTableFoot: document.getElementById("retroTableFoot"),
+      scheduleTableBody: document.getElementById("scheduleTableBody"),
+      recalculateBtn: document.getElementById("recalculateBtn"),
+      printBtn: document.getElementById("printBtn"),
+      csvScheduleBtn: document.getElementById("csvScheduleBtn"),
+      csvRetroBtn: document.getElementById("csvRetroBtn")
+    };
+
+    let latestModel = null;
+
+    const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+    const currencyWithCents = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    function parseDate(value) {
+      const parts = String(value || "").split("-").map(Number);
+      if (parts.length !== 3 || parts.some(Number.isNaN)) return new Date(Date.UTC(2026, 0, 1));
+      return new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+    }
+
+    function formatDate(date) {
+      return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }).format(date);
+    }
+
+    function formatMonthYear(date) {
+      return new Intl.DateTimeFormat("en-US", { month: "short", year: "numeric", timeZone: "UTC" }).format(date);
+    }
+
+    function addDays(date, days) {
+      const next = new Date(date.getTime());
+      next.setUTCDate(next.getUTCDate() + days);
+      return next;
+    }
+
+    function daysInclusive(startDate, endDate) {
+      const msPerDay = 24 * 60 * 60 * 1000;
+      return Math.floor((endDate - startDate) / msPerDay) + 1;
+    }
+
+    function numeric(value, fallback = 0) {
+      const n = Number(value);
+      return Number.isFinite(n) ? n : fallback;
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function buildEvents(firstColaDate, firstStepDate, endYear, colaRate, stepRate) {
+      const events = [];
+      const startYear = Math.min(firstColaDate.getUTCFullYear(), firstStepDate.getUTCFullYear());
+
+      for (let year = startYear; year <= endYear; year++) {
+        const stepDate = new Date(Date.UTC(year, 0, 1));
+        const colaDate = new Date(Date.UTC(year, 6, 1));
+
+        if (stepDate >= firstStepDate) events.push({ date: stepDate, type: "STEP", rate: stepRate });
+        if (colaDate >= firstColaDate) events.push({ date: colaDate, type: "COLA", rate: colaRate });
+      }
+
+      return events.sort((a, b) => a.date - b.date);
+    }
+
+    function calculateModel() {
+      const startingSalary = numeric(els.baseSalary.value, 0);
+      const colaDecimal = numeric(els.colaRate.value, 0) / 100;
+      const stepDecimal = numeric(els.stepRate.value, 0) / 100;
+      const projectionEndYear = numeric(els.endYear.value, 2029);
+      const annualDays = numeric(els.daysPerYear.value, 365) || 365;
+
+      const firstColaDate = parseDate(els.firstColaDate.value);
+      const firstStepDate = parseDate(els.firstStepDate.value);
+      const correctedPayrollDate = parseDate(els.correctionDate.value);
+      const retroPayoutDate = parseDate(els.retroPayoutDate.value);
+      const retroEndDate = addDays(correctedPayrollDate, -1);
+
+      const raiseEvents = buildEvents(firstColaDate, firstStepDate, projectionEndYear, colaDecimal, stepDecimal);
+
+      let currentSalary = startingSalary;
+      const schedule = raiseEvents.map((event, index) => {
+        const salaryBefore = currentSalary;
+        const increaseAmount = salaryBefore * event.rate;
+        const salaryAfter = salaryBefore + increaseAmount;
+        currentSalary = salaryAfter;
+
+        return { id: index + 1, date: event.date, label: formatMonthYear(event.date), type: event.type, rate: event.rate, salaryBefore, increaseAmount, salaryAfter };
+      });
+
+      const retroEligibleRows = schedule.filter(row => row.date <= retroEndDate);
+      const retroRows = retroEligibleRows.map((row, index) => {
+        const nextRow = retroEligibleRows[index + 1];
+        const segmentStart = row.date;
+        const segmentEnd = nextRow ? addDays(nextRow.date, -1) : retroEndDate;
+        if (segmentEnd < segmentStart) return null;
+
+        const days = daysInclusive(segmentStart, segmentEnd);
+        const correctedAnnualSalary = row.salaryAfter;
+        const annualDifference = correctedAnnualSalary - startingSalary;
+        const retroGross = (annualDifference / annualDays) * days;
+
+        return { id: row.id, period: `${formatDate(segmentStart)} – ${formatDate(segmentEnd)}`, days, raiseType: row.type, correctedAnnualSalary, annualDifference, retroGross };
+      }).filter(Boolean);
+
+      const correctedSalaryRow = [...schedule].reverse().find(row => row.date <= correctedPayrollDate);
+      const nextRaiseRow = schedule.find(row => row.date > correctedPayrollDate);
+      const finalSalaryRow = schedule[schedule.length - 1];
+      const retroTotal = retroRows.reduce((sum, row) => sum + row.retroGross, 0);
+      const chartData = [{ label: "Current", salary: Math.round(startingSalary) }, ...schedule.map(row => ({ label: row.label, salary: Math.round(row.salaryAfter) }))];
+
+      return {
+        startingSalary,
+        correctedPayrollDate,
+        retroEndDate,
+        retroPayoutDate,
+        correctedSalary: correctedSalaryRow ? correctedSalaryRow.salaryAfter : startingSalary,
+        nextRaiseRow,
+        finalSalary: finalSalaryRow ? finalSalaryRow.salaryAfter : startingSalary,
+        retroTotal,
+        schedule,
+        retroRows,
+        chartData,
+        projectionEndYear
+      };
+    }
+
+    function renderMetrics(model) {
+      els.retroPayoutBadge.textContent = formatDate(model.retroPayoutDate);
+      els.startingSalaryMetric.textContent = currency.format(model.startingSalary);
+      els.correctedSalaryMetric.textContent = currency.format(model.correctedSalary);
+      els.correctedSalaryNote.textContent = `As of ${formatDate(model.correctedPayrollDate)}`;
+      els.retroTotalMetric.textContent = currencyWithCents.format(model.retroTotal);
+      els.retroTotalNote.textContent = `Through ${formatDate(model.retroEndDate)}`;
+      els.endingSalaryMetric.textContent = currency.format(model.finalSalary);
+      els.endingSalaryNote.textContent = `Through ${model.projectionEndYear}`;
+      els.nextRaisePill.textContent = model.nextRaiseRow ? `Next raise: ${model.nextRaiseRow.type} on ${formatDate(model.nextRaiseRow.date)}` : "No future raises within projection range";
+    }
+
+    function renderTables(model) {
+      els.scheduleTableBody.innerHTML = model.schedule.map(row => `
+        <tr>
+          <td>${escapeHtml(formatDate(row.date))}</td>
+          <td>${escapeHtml(row.type)}</td>
+          <td class="right">${(row.rate * 100).toFixed(1)}%</td>
+          <td class="right">${currency.format(row.salaryBefore)}</td>
+          <td class="right">${currency.format(row.increaseAmount)}</td>
+          <td class="right"><strong>${currency.format(row.salaryAfter)}</strong></td>
+        </tr>
+      `).join("");
+
+      els.retroTableBody.innerHTML = model.retroRows.map(row => `
+        <tr>
+          <td>${escapeHtml(row.period)}</td>
+          <td class="right">${row.days}</td>
+          <td>${escapeHtml(row.raiseType)}</td>
+          <td class="right">${currency.format(row.correctedAnnualSalary)}</td>
+          <td class="right">${currency.format(row.annualDifference)}</td>
+          <td class="right"><strong>${currencyWithCents.format(row.retroGross)}</strong></td>
+        </tr>
+      `).join("");
+
+      els.retroTableFoot.innerHTML = `
+        <tr class="total-row">
+          <td colspan="5">Estimated Gross Retroactive Pay</td>
+          <td class="right">${currencyWithCents.format(model.retroTotal)}</td>
+        </tr>
+      `;
+    }
+
+    function renderChart(model) {
+      const data = model.chartData;
+      const width = 1100;
+      const height = 380;
+      const margin = { top: 28, right: 34, bottom: 58, left: 74 };
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
+
+      const values = data.map(d => d.salary);
+      const minValue = Math.min(...values);
+      const maxValue = Math.max(...values);
+      const padding = Math.max((maxValue - minValue) * 0.12, 1000);
+      const yMin = Math.floor((minValue - padding) / 5000) * 5000;
+      const yMax = Math.ceil((maxValue + padding) / 5000) * 5000;
+      const yRange = yMax - yMin || 1;
+
+      const x = index => margin.left + (data.length === 1 ? innerWidth / 2 : (index / (data.length - 1)) * innerWidth);
+      const y = value => margin.top + innerHeight - ((value - yMin) / yRange) * innerHeight;
+
+      const yTicks = [];
+      const tickCount = 5;
+      for (let i = 0; i <= tickCount; i++) yTicks.push(yMin + (yRange / tickCount) * i);
+
+      const linePoints = data.map((d, i) => `${x(i)},${y(d.salary)}`).join(" ");
+      const areaPoints = `${margin.left},${margin.top + innerHeight} ${linePoints} ${margin.left + innerWidth},${margin.top + innerHeight}`;
+
+      const gridLines = yTicks.map(tick => `
+        <line x1="${margin.left}" x2="${margin.left + innerWidth}" y1="${y(tick)}" y2="${y(tick)}" stroke="#e2e8f0" stroke-width="1" />
+        <text x="${margin.left - 12}" y="${y(tick) + 4}" text-anchor="end" font-size="12" fill="#64748b">$${Math.round(tick / 1000)}k</text>
+      `).join("");
+
+      const xLabels = data.map((d, i) => `
+        <text x="${x(i)}" y="${height - 24}" text-anchor="middle" font-size="12" fill="#64748b">${escapeHtml(d.label)}</text>
+      `).join("");
+
+      const points = data.map((d, i) => `
+        <g>
+          <circle cx="${x(i)}" cy="${y(d.salary)}" r="5" fill="#2563eb" stroke="white" stroke-width="2" />
+          <title>${escapeHtml(d.label)}: ${currency.format(d.salary)}</title>
+        </g>
+      `).join("");
+
+      const last = data[data.length - 1];
+      const lastX = x(data.length - 1);
+      const lastY = y(last.salary);
+
+      els.chartContainer.innerHTML = `
+        <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Line chart showing projected salary growth">
+          <rect x="0" y="0" width="${width}" height="${height}" fill="transparent" />
+          ${gridLines}
+          <line x1="${margin.left}" x2="${margin.left}" y1="${margin.top}" y2="${margin.top + innerHeight}" stroke="#94a3b8" stroke-width="1" />
+          <line x1="${margin.left}" x2="${margin.left + innerWidth}" y1="${margin.top + innerHeight}" y2="${margin.top + innerHeight}" stroke="#94a3b8" stroke-width="1" />
+          <polygon points="${areaPoints}" fill="#dbeafe" opacity="0.65" />
+          <polyline points="${linePoints}" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+          ${points}
+          ${xLabels}
+          <g>
+            <rect x="${Math.max(margin.left, lastX - 134)}" y="${Math.max(10, lastY - 50)}" width="126" height="34" rx="10" fill="#172033" />
+            <text x="${Math.max(margin.left, lastX - 122)}" y="${Math.max(10, lastY - 50) + 22}" fill="white" font-size="13" font-weight="700">${currency.format(last.salary)}</text>
+          </g>
+        </svg>
+      `;
+    }
+
+    function downloadCsv(filename, rows) {
+      const csv = rows.map(row => row.map(value => {
+        const text = String(value ?? "");
+        return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+      }).join(",")).join("\n");
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function downloadScheduleCsv() {
+      if (!latestModel) return;
+      const rows = [
+        ["Effective Date", "Type", "Rate", "Salary Before", "Increase", "Salary After"],
+        ...latestModel.schedule.map(row => [formatDate(row.date), row.type, `${(row.rate * 100).toFixed(1)}%`, row.salaryBefore.toFixed(2), row.increaseAmount.toFixed(2), row.salaryAfter.toFixed(2)])
+      ];
+      downloadCsv("ct-salary-raise-schedule.csv", rows);
+    }
+
+    function downloadRetroCsv() {
+      if (!latestModel) return;
+      const rows = [
+        ["Retro Period", "Days", "Raise", "Corrected Salary", "Annual Difference", "Gross Retro"],
+        ...latestModel.retroRows.map(row => [row.period, row.days, row.raiseType, row.correctedAnnualSalary.toFixed(2), row.annualDifference.toFixed(2), row.retroGross.toFixed(2)]),
+        ["Estimated Gross Retroactive Pay", "", "", "", "", latestModel.retroTotal.toFixed(2)]
+      ];
+      downloadCsv("ct-retroactive-pay-estimate.csv", rows);
+    }
+
+    function render() {
+      latestModel = calculateModel();
+      renderMetrics(latestModel);
+      renderTables(latestModel);
+      renderChart(latestModel);
+    }
+
+    function bindEvents() {
+      const inputs = [els.baseSalary, els.colaRate, els.stepRate, els.firstColaDate, els.firstStepDate, els.correctionDate, els.retroPayoutDate, els.endYear, els.daysPerYear];
+      inputs.forEach(input => input.addEventListener("input", render));
+      els.recalculateBtn.addEventListener("click", render);
+      els.printBtn.addEventListener("click", () => window.print());
+      els.csvScheduleBtn.addEventListener("click", downloadScheduleCsv);
+      els.csvRetroBtn.addEventListener("click", downloadRetroCsv);
+      els.salaryPreset.addEventListener("change", () => {
+        if (els.salaryPreset.value) {
+          els.baseSalary.value = els.salaryPreset.value;
+          render();
+        }
+      });
+      window.addEventListener("resize", render);
+    }
+
+    bindEvents();
+    render();
+  </script>
+</body>
+</html>
