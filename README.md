@@ -12,6 +12,7 @@ This dashboard allows a user to enter a current annual salary and model:
 - Corrected salary after delayed increases are implemented
 - Estimated gross retroactive pay
 - Future projected salary through a selected end year
+- Estimated gross bi-weekly pay for each projected salary step
 
 The current version is a single-file static web application contained in `index.html`. It does not require a backend, database, build process, package manager, or external JavaScript libraries.
 
@@ -20,8 +21,8 @@ The current version is a single-file static web application contained in `index.
 | Input | Default Value |
 |---|---:|
 | Starting salary | $100,000 |
-| COLA rate | 2.5% |
-| STEP rate | 3.0% |
+| COLA rate assumption | 2.5% |
+| STEP rate assumption | 3.0% |
 | First delayed COLA effective date | July 1, 2025 |
 | First delayed STEP effective date | January 1, 2026 |
 | Corrected salary reflected in payroll | June 12, 2026 |
@@ -44,6 +45,23 @@ The current method uses a calendar-day estimate:
 ```text
 Annual salary difference ÷ days per year × eligible retroactive days
 ```
+
+The gross bi-weekly pay estimate uses:
+
+```text
+Corrected annual salary ÷ 26 pay periods
+```
+
+## Features
+
+- Dynamic salary, COLA, STEP, date, and projection-year inputs
+- Reset defaults button
+- Print / Save PDF option
+- CSV export for the raise schedule
+- CSV export for the retroactive pay estimate
+- Salary growth chart with hover/focus tooltips
+- Compounded raise schedule with annual salary and gross bi-weekly pay
+- Footer with last-updated and unofficial-estimator language
 
 ## Important Disclaimer
 
@@ -87,7 +105,6 @@ Potential future improvements include:
 - Workday-based retroactive calculation option
 - Save/load scenarios
 - Multiple salary comparison scenarios
-- Export to PDF report
 - More detailed methodology notes
 - Separate CSS and JavaScript files if the project grows beyond a single-file prototype
 
