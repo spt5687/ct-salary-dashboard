@@ -107,6 +107,7 @@
       grid-template-columns: 380px minmax(0, 1fr);
       gap: 22px;
       margin-top: 22px;
+      align-items: start;
     }
 
     .panel {
@@ -192,12 +193,18 @@
     .primary { background: var(--accent); color: white; }
     .secondary { background: var(--soft); color: #1e293b; }
 
-    .dashboard-main { min-width: 0; display: grid; gap: 22px; }
+    .dashboard-main {
+      min-width: 0;
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
 
     .metric-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 14px;
+      align-items: stretch;
     }
 
     .metric-card {
@@ -205,13 +212,13 @@
       border: 1px solid var(--line);
       border-radius: 20px;
       box-shadow: var(--shadow);
-      padding: 18px;
-      min-height: 122px;
+      padding: 16px 18px;
+      min-height: 112px;
     }
 
     .metric-label {
       color: var(--muted);
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.07em;
       font-weight: 900;
@@ -219,20 +226,56 @@
     }
 
     .metric-value {
-      font-size: clamp(1.45rem, 2vw, 2rem);
+      font-size: clamp(1.45rem, 2vw, 1.9rem);
       font-weight: 900;
       letter-spacing: -0.04em;
       margin-bottom: 5px;
     }
 
-    .metric-note { color: var(--muted); font-size: 0.86rem; margin: 0; }
+    .metric-note { color: var(--muted); font-size: 0.84rem; margin: 0; }
+
+    .insight-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .insight-card {
+      background: #f8fbff;
+      border: 1px solid #dbeafe;
+      border-radius: 16px;
+      padding: 12px 14px;
+      min-height: 88px;
+    }
+
+    .insight-label {
+      color: var(--muted);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .insight-value {
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 3px;
+    }
+
+    .insight-note {
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin: 0;
+    }
 
     .section-head {
       display: flex;
       justify-content: space-between;
       align-items: end;
       gap: 16px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .pill {
@@ -250,8 +293,8 @@
     .chart-wrap {
       position: relative;
       width: 100%;
-      height: clamp(285px, 30vw, 335px);
-      min-height: 285px;
+      height: clamp(270px, 25vw, 310px);
+      min-height: 270px;
       border-radius: 18px;
       background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
       border: 1px solid #e5edf5;
@@ -365,14 +408,14 @@
     @media (max-width: 1100px) {
       .layout, .tables { grid-template-columns: 1fr; }
       .inputs-panel { position: static; }
-      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .chart-wrap { height: 320px; }
+      .metric-grid, .insight-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .chart-wrap { height: 300px; }
     }
 
     @media (max-width: 760px) {
       .page { width: min(100% - 18px, 1320px); margin-top: 9px; }
       .hero { grid-template-columns: 1fr; padding: 20px; }
-      .metric-grid, .notes-grid, .two-col, .actions { grid-template-columns: 1fr; }
+      .metric-grid, .insight-grid, .notes-grid, .two-col, .actions { grid-template-columns: 1fr; }
       .section-head { display: block; }
       .pill { margin-top: 8px; }
       .chart-wrap { height: 285px; }
@@ -383,8 +426,8 @@
       .page { width: 100%; margin: 0; }
       .inputs-panel, .actions, button { display: none !important; }
       .hero, .panel, .metric-card { box-shadow: none; }
-      .layout, .tables, .metric-grid, .notes-grid { display: block; }
-      .panel, .metric-card { break-inside: avoid; margin-bottom: 14px; }
+      .layout, .tables, .metric-grid, .insight-grid, .notes-grid { display: block; }
+      .panel, .metric-card, .insight-card { break-inside: avoid; margin-bottom: 14px; }
       .chart-wrap { height: 300px; }
     }
   </style>
@@ -513,12 +556,38 @@
 
           <div class="metric-card">
             <div class="metric-label">Projected Ending Salary</div>
-            <div class="metric-value" id="endingSalaryMetric">$124,235</div>
+            <div class="metric-value" id="endingSalaryMetric">$127,341</div>
             <p class="metric-note" id="endingSalaryNote">Through 2029</p>
           </div>
         </section>
 
-        <section class="panel">
+        <section class="insight-grid" aria-label="Salary insight callouts">
+          <div class="insight-card">
+            <div class="insight-label">Correction Gain</div>
+            <div class="insight-value" id="correctionGainMetric">$5,575</div>
+            <p class="insight-note" id="correctionGainNote">Starting to corrected salary</p>
+          </div>
+
+          <div class="insight-card">
+            <div class="insight-label">Next Raise Amount</div>
+            <div class="insight-value" id="nextRaiseAmountMetric">$2,639</div>
+            <p class="insight-note" id="nextRaiseAmountNote">COLA on Jul 1, 2026</p>
+          </div>
+
+          <div class="insight-card">
+            <div class="insight-label">Retro Days</div>
+            <div class="insight-value" id="retroDaysMetric">346</div>
+            <p class="insight-note">Estimated calendar days</p>
+          </div>
+
+          <div class="insight-card">
+            <div class="insight-label">Total Growth</div>
+            <div class="insight-value" id="totalGrowthMetric">$27,341</div>
+            <p class="insight-note" id="totalGrowthNote">27.3% projected increase</p>
+          </div>
+        </section>
+
+        <section class="panel chart-panel">
           <div class="section-head">
             <div>
               <h2>Salary Growth Projection</h2>
@@ -604,6 +673,13 @@
       retroTotalNote: document.getElementById("retroTotalNote"),
       endingSalaryMetric: document.getElementById("endingSalaryMetric"),
       endingSalaryNote: document.getElementById("endingSalaryNote"),
+      correctionGainMetric: document.getElementById("correctionGainMetric"),
+      correctionGainNote: document.getElementById("correctionGainNote"),
+      nextRaiseAmountMetric: document.getElementById("nextRaiseAmountMetric"),
+      nextRaiseAmountNote: document.getElementById("nextRaiseAmountNote"),
+      retroDaysMetric: document.getElementById("retroDaysMetric"),
+      totalGrowthMetric: document.getElementById("totalGrowthMetric"),
+      totalGrowthNote: document.getElementById("totalGrowthNote"),
       nextRaisePill: document.getElementById("nextRaisePill"),
       chartContainer: document.getElementById("chartContainer"),
       retroTableBody: document.getElementById("retroTableBody"),
@@ -619,6 +695,7 @@
 
     const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
     const currencyWithCents = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const wholeNumber = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
 
     function parseDate(value) {
       const parts = String(value || "").split("-").map(Number);
@@ -718,6 +795,7 @@
       const nextRaiseRow = schedule.find(row => row.date > correctedPayrollDate);
       const finalSalaryRow = schedule[schedule.length - 1];
       const retroTotal = retroRows.reduce((sum, row) => sum + row.retroGross, 0);
+      const retroDays = retroRows.reduce((sum, row) => sum + row.days, 0);
       const chartData = [{ label: "Current", salary: Math.round(startingSalary) }, ...schedule.map(row => ({ label: row.label, salary: Math.round(row.salaryAfter) }))];
 
       return {
@@ -729,6 +807,7 @@
         nextRaiseRow,
         finalSalary: finalSalaryRow ? finalSalaryRow.salaryAfter : startingSalary,
         retroTotal,
+        retroDays,
         schedule,
         retroRows,
         chartData,
@@ -737,6 +816,10 @@
     }
 
     function renderMetrics(model) {
+      const correctionGain = model.correctedSalary - model.startingSalary;
+      const totalGrowth = model.finalSalary - model.startingSalary;
+      const totalGrowthPercent = model.startingSalary ? (totalGrowth / model.startingSalary) * 100 : 0;
+
       els.retroPayoutBadge.textContent = formatDate(model.retroPayoutDate);
       els.startingSalaryMetric.textContent = currency.format(model.startingSalary);
       els.correctedSalaryMetric.textContent = currency.format(model.correctedSalary);
@@ -745,7 +828,22 @@
       els.retroTotalNote.textContent = `Through ${formatDate(model.retroEndDate)}`;
       els.endingSalaryMetric.textContent = currency.format(model.finalSalary);
       els.endingSalaryNote.textContent = `Through ${model.projectionEndYear}`;
-      els.nextRaisePill.textContent = model.nextRaiseRow ? `Next raise: ${model.nextRaiseRow.type} on ${formatDate(model.nextRaiseRow.date)}` : "No future raises within projection range";
+
+      els.correctionGainMetric.textContent = currency.format(correctionGain);
+      els.correctionGainNote.textContent = "Starting to corrected salary";
+      els.retroDaysMetric.textContent = wholeNumber.format(model.retroDays);
+      els.totalGrowthMetric.textContent = currency.format(totalGrowth);
+      els.totalGrowthNote.textContent = `${totalGrowthPercent.toFixed(1)}% projected increase`;
+
+      if (model.nextRaiseRow) {
+        els.nextRaiseAmountMetric.textContent = currency.format(model.nextRaiseRow.increaseAmount);
+        els.nextRaiseAmountNote.textContent = `${model.nextRaiseRow.type} on ${formatDate(model.nextRaiseRow.date)}`;
+        els.nextRaisePill.textContent = `Next raise: ${model.nextRaiseRow.type} on ${formatDate(model.nextRaiseRow.date)}`;
+      } else {
+        els.nextRaiseAmountMetric.textContent = "N/A";
+        els.nextRaiseAmountNote.textContent = "No raise in projection range";
+        els.nextRaisePill.textContent = "No future raises within projection range";
+      }
     }
 
     function renderTables(model) {
@@ -782,8 +880,8 @@
     function renderChart(model) {
       const data = model.chartData;
       const width = 1100;
-      const height = 320;
-      const margin = { top: 24, right: 36, bottom: 46, left: 74 };
+      const height = 300;
+      const margin = { top: 22, right: 36, bottom: 44, left: 74 };
       const innerWidth = width - margin.left - margin.right;
       const innerHeight = height - margin.top - margin.bottom;
 
@@ -799,7 +897,7 @@
       const y = value => margin.top + innerHeight - ((value - yMin) / yRange) * innerHeight;
 
       const yTicks = [];
-      const tickCount = 5;
+      const tickCount = 4;
       for (let i = 0; i <= tickCount; i++) yTicks.push(yMin + (yRange / tickCount) * i);
 
       const linePoints = data.map((d, i) => `${x(i)},${y(d.salary)}`).join(" ");
@@ -811,7 +909,7 @@
       `).join("");
 
       const xLabels = data.map((d, i) => `
-        <text x="${x(i)}" y="${height - 19}" text-anchor="middle" font-size="12" fill="#64748b">${escapeHtml(d.label)}</text>
+        <text x="${x(i)}" y="${height - 17}" text-anchor="middle" font-size="12" fill="#64748b">${escapeHtml(d.label)}</text>
       `).join("");
 
       const visiblePoints = data.map((d, i) => `
@@ -850,8 +948,8 @@
           ${visiblePoints}
           ${xLabels}
           <g>
-            <rect x="${Math.max(margin.left, lastX - 134)}" y="${Math.max(10, lastY - 48)}" width="126" height="32" rx="10" fill="#172033" />
-            <text x="${Math.max(margin.left, lastX - 122)}" y="${Math.max(10, lastY - 48) + 21}" fill="white" font-size="13" font-weight="700">${currency.format(last.salary)}</text>
+            <rect x="${Math.max(margin.left, lastX - 134)}" y="${Math.max(10, lastY - 46)}" width="126" height="32" rx="10" fill="#172033" />
+            <text x="${Math.max(margin.left, lastX - 122)}" y="${Math.max(10, lastY - 46) + 21}" fill="white" font-size="13" font-weight="700">${currency.format(last.salary)}</text>
           </g>
           ${hitPoints}
         </svg>
