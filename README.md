@@ -19,7 +19,7 @@ The current version is a single-file static web application contained in `index.
 
 | Input | Default Value |
 |---|---:|
-| Starting salary | $104,000 |
+| Starting salary | $100,000 |
 | COLA rate | 2.5% |
 | STEP rate | 3.0% |
 | First delayed COLA effective date | July 1, 2025 |
@@ -33,10 +33,10 @@ The current version is a single-file static web application contained in `index.
 
 The dashboard calculates retroactive pay by comparing the original salary against the corrected compounded salary that should have applied during each retroactive period.
 
-For example, with a starting salary of $104,000:
+For example, with a starting salary of $100,000:
 
-1. July 1, 2025 COLA applies: `$104,000 × 1.025 = $106,600`
-2. January 1, 2026 STEP applies to the corrected salary: `$106,600 × 1.03 = $109,798`
+1. July 1, 2025 COLA applies: `$100,000 × 1.025 = $102,500`
+2. January 1, 2026 STEP applies to the corrected salary: `$102,500 × 1.03 = $105,575`
 3. Retroactive pay is estimated for each period before the corrected salary is reflected in payroll.
 
 The current method uses a calendar-day estimate:
