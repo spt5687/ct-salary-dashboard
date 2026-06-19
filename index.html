@@ -517,7 +517,7 @@
           <div class="two-col">
             <label>
               Projection end year
-              <input id="endYear" type="number" min="2026" step="1" value="2029" />
+              <input id="endYear" type="number" min="2026" step="1" value="2028" />
             </label>
             <label>
               Days per year
@@ -561,8 +561,8 @@
 
           <div class="kpi-card">
             <div class="kpi-label">Projected Ending Salary</div>
-            <div class="kpi-value" id="endingSalaryMetric">$127,341</div>
-            <p class="kpi-note" id="endingSalaryNote">Through 2029</p>
+            <div class="kpi-value" id="endingSalaryMetric">$120,617</div>
+            <p class="kpi-note" id="endingSalaryNote">Through 2028</p>
           </div>
 
           <div class="kpi-card">
@@ -585,8 +585,8 @@
 
           <div class="kpi-card">
             <div class="kpi-label">Total Growth</div>
-            <div class="kpi-value" id="totalGrowthMetric">$27,341</div>
-            <p class="kpi-note" id="totalGrowthNote">27.3% projected increase</p>
+            <div class="kpi-value" id="totalGrowthMetric">$20,617</div>
+            <p class="kpi-note" id="totalGrowthNote">20.6% projected increase</p>
           </div>
         </section>
 
@@ -756,7 +756,7 @@
       const startingSalary = numeric(els.baseSalary.value, 0);
       const colaDecimal = numeric(els.colaRate.value, 0) / 100;
       const stepDecimal = numeric(els.stepRate.value, 0) / 100;
-      const projectionEndYear = numeric(els.endYear.value, 2029);
+      const projectionEndYear = numeric(els.endYear.value, 2028);
       const annualDays = numeric(els.daysPerYear.value, 365) || 365;
 
       const firstColaDate = parseDate(els.firstColaDate.value);
