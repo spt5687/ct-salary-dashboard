@@ -26,7 +26,7 @@ The current version is a single-file static web application contained in `index.
 | First delayed STEP effective date | January 1, 2026 |
 | Corrected salary reflected in payroll | June 12, 2026 |
 | Retroactive lump-sum payout date | August 12, 2026 |
-| Projection end year | 2029 |
+| Projection end year | 2028 |
 | Days per year | 365 |
 
 ## How the Retroactive Estimate Works
