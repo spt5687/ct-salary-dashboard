@@ -200,73 +200,53 @@
       align-content: start;
     }
 
-    .metric-grid {
+    .kpi-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 14px;
       align-items: stretch;
     }
 
-    .metric-card {
+    .kpi-card {
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 20px;
       box-shadow: var(--shadow);
-      padding: 16px 18px;
-      min-height: 112px;
+      padding: 18px 20px;
+      min-height: 132px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
     }
 
-    .metric-label {
+    .kpi-label {
+      min-height: 32px;
+      display: flex;
+      align-items: flex-start;
       color: var(--muted);
       font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.07em;
+      line-height: 1.25;
       font-weight: 900;
       margin-bottom: 8px;
     }
 
-    .metric-value {
-      font-size: clamp(1.45rem, 2vw, 1.9rem);
+    .kpi-value {
+      min-height: 39px;
+      display: flex;
+      align-items: center;
+      font-size: clamp(1.55rem, 2vw, 1.9rem);
+      line-height: 1;
       font-weight: 900;
       letter-spacing: -0.04em;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
     }
 
-    .metric-note { color: var(--muted); font-size: 0.84rem; margin: 0; }
-
-    .insight-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .insight-card {
-      background: #f8fbff;
-      border: 1px solid #dbeafe;
-      border-radius: 16px;
-      padding: 12px 14px;
-      min-height: 88px;
-    }
-
-    .insight-label {
+    .kpi-note {
       color: var(--muted);
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      font-weight: 900;
-      margin-bottom: 6px;
-    }
-
-    .insight-value {
-      font-size: 1.25rem;
-      font-weight: 900;
-      letter-spacing: -0.03em;
-      margin-bottom: 3px;
-    }
-
-    .insight-note {
-      color: var(--muted);
-      font-size: 0.78rem;
+      font-size: 0.85rem;
+      line-height: 1.35;
       margin: 0;
     }
 
@@ -293,8 +273,8 @@
     .chart-wrap {
       position: relative;
       width: 100%;
-      height: clamp(270px, 25vw, 310px);
-      min-height: 270px;
+      height: clamp(260px, 23vw, 295px);
+      min-height: 260px;
       border-radius: 18px;
       background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
       border: 1px solid #e5edf5;
@@ -340,12 +320,6 @@
       font-weight: 700;
     }
 
-    .tables {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 22px;
-    }
-
     .table-wrap { overflow-x: auto; margin-top: 14px; }
 
     table {
@@ -377,6 +351,36 @@
     .right { text-align: right; }
     .total-row td { border-bottom: 0; font-weight: 900; padding-top: 14px; }
 
+    .schedule-panel {
+      padding: 18px 20px 14px;
+    }
+
+    .schedule-panel .helper {
+      margin-bottom: 10px;
+    }
+
+    .schedule-panel .table-wrap {
+      margin-top: 8px;
+    }
+
+    .schedule-panel table {
+      min-width: 0;
+      font-size: 0.82rem;
+    }
+
+    .schedule-panel th {
+      padding: 8px 10px;
+      font-size: 0.66rem;
+    }
+
+    .schedule-panel td {
+      padding: 8px 10px;
+    }
+
+    .retro-section {
+      margin-top: 22px;
+    }
+
     .notes-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -406,28 +410,29 @@
     }
 
     @media (max-width: 1100px) {
-      .layout, .tables { grid-template-columns: 1fr; }
+      .layout { grid-template-columns: 1fr; }
       .inputs-panel { position: static; }
-      .metric-grid, .insight-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .chart-wrap { height: 300px; }
     }
 
     @media (max-width: 760px) {
       .page { width: min(100% - 18px, 1320px); margin-top: 9px; }
       .hero { grid-template-columns: 1fr; padding: 20px; }
-      .metric-grid, .insight-grid, .notes-grid, .two-col, .actions { grid-template-columns: 1fr; }
+      .kpi-grid, .notes-grid, .two-col, .actions { grid-template-columns: 1fr; }
       .section-head { display: block; }
       .pill { margin-top: 8px; }
       .chart-wrap { height: 285px; }
+      .schedule-panel table { min-width: 720px; }
     }
 
     @media print {
       body { background: white; }
       .page { width: 100%; margin: 0; }
       .inputs-panel, .actions, button { display: none !important; }
-      .hero, .panel, .metric-card { box-shadow: none; }
-      .layout, .tables, .metric-grid, .insight-grid, .notes-grid { display: block; }
-      .panel, .metric-card, .insight-card { break-inside: avoid; margin-bottom: 14px; }
+      .hero, .panel, .kpi-card { box-shadow: none; }
+      .layout, .kpi-grid, .notes-grid { display: block; }
+      .panel, .kpi-card { break-inside: avoid; margin-bottom: 14px; }
       .chart-wrap { height: 300px; }
     }
   </style>
@@ -535,55 +540,53 @@
       </aside>
 
       <main class="dashboard-main">
-        <section class="metric-grid" aria-label="Summary metrics">
-          <div class="metric-card">
-            <div class="metric-label">Starting Salary</div>
-            <div class="metric-value" id="startingSalaryMetric">$100,000</div>
-            <p class="metric-note">Input salary before delayed increases</p>
+        <section class="kpi-grid" aria-label="Summary metrics and salary callouts">
+          <div class="kpi-card">
+            <div class="kpi-label">Starting Salary</div>
+            <div class="kpi-value" id="startingSalaryMetric">$100,000</div>
+            <p class="kpi-note">Input salary before delayed increases</p>
           </div>
 
-          <div class="metric-card">
-            <div class="metric-label">Corrected Salary</div>
-            <div class="metric-value" id="correctedSalaryMetric">$105,575</div>
-            <p class="metric-note" id="correctedSalaryNote">As of Jun 12, 2026</p>
+          <div class="kpi-card">
+            <div class="kpi-label">Corrected Salary</div>
+            <div class="kpi-value" id="correctedSalaryMetric">$105,575</div>
+            <p class="kpi-note" id="correctedSalaryNote">As of Jun 12, 2026</p>
           </div>
 
-          <div class="metric-card">
-            <div class="metric-label">Estimated Gross Retro</div>
-            <div class="metric-value" id="retroTotalMetric">$3,734.66</div>
-            <p class="metric-note" id="retroTotalNote">Through Jun 11, 2026</p>
+          <div class="kpi-card">
+            <div class="kpi-label">Estimated Gross Retro</div>
+            <div class="kpi-value" id="retroTotalMetric">$3,734.66</div>
+            <p class="kpi-note" id="retroTotalNote">Through Jun 11, 2026</p>
           </div>
 
-          <div class="metric-card">
-            <div class="metric-label">Projected Ending Salary</div>
-            <div class="metric-value" id="endingSalaryMetric">$127,341</div>
-            <p class="metric-note" id="endingSalaryNote">Through 2029</p>
-          </div>
-        </section>
-
-        <section class="insight-grid" aria-label="Salary insight callouts">
-          <div class="insight-card">
-            <div class="insight-label">Correction Gain</div>
-            <div class="insight-value" id="correctionGainMetric">$5,575</div>
-            <p class="insight-note" id="correctionGainNote">Starting to corrected salary</p>
+          <div class="kpi-card">
+            <div class="kpi-label">Projected Ending Salary</div>
+            <div class="kpi-value" id="endingSalaryMetric">$127,341</div>
+            <p class="kpi-note" id="endingSalaryNote">Through 2029</p>
           </div>
 
-          <div class="insight-card">
-            <div class="insight-label">Next Raise Amount</div>
-            <div class="insight-value" id="nextRaiseAmountMetric">$2,639</div>
-            <p class="insight-note" id="nextRaiseAmountNote">COLA on Jul 1, 2026</p>
+          <div class="kpi-card">
+            <div class="kpi-label">Correction Gain</div>
+            <div class="kpi-value" id="correctionGainMetric">$5,575</div>
+            <p class="kpi-note" id="correctionGainNote">Starting to corrected salary</p>
           </div>
 
-          <div class="insight-card">
-            <div class="insight-label">Retro Days</div>
-            <div class="insight-value" id="retroDaysMetric">346</div>
-            <p class="insight-note">Estimated calendar days</p>
+          <div class="kpi-card">
+            <div class="kpi-label">Next Raise Amount</div>
+            <div class="kpi-value" id="nextRaiseAmountMetric">$2,639</div>
+            <p class="kpi-note" id="nextRaiseAmountNote">COLA on Jul 1, 2026</p>
           </div>
 
-          <div class="insight-card">
-            <div class="insight-label">Total Growth</div>
-            <div class="insight-value" id="totalGrowthMetric">$27,341</div>
-            <p class="insight-note" id="totalGrowthNote">27.3% projected increase</p>
+          <div class="kpi-card">
+            <div class="kpi-label">Retro Days</div>
+            <div class="kpi-value" id="retroDaysMetric">346</div>
+            <p class="kpi-note">Estimated calendar days</p>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">Total Growth</div>
+            <div class="kpi-value" id="totalGrowthMetric">$27,341</div>
+            <p class="kpi-note" id="totalGrowthNote">27.3% projected increase</p>
           </div>
         </section>
 
@@ -597,49 +600,47 @@
           </div>
           <div class="chart-wrap" id="chartContainer" aria-label="Salary growth chart"></div>
         </section>
+
+        <section class="panel schedule-panel">
+          <h2>Compounded Raise Schedule</h2>
+          <p class="helper">Each raise applies to the salary produced by the prior raise.</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Effective Date</th>
+                  <th>Type</th>
+                  <th class="right">Rate</th>
+                  <th class="right">Salary Before</th>
+                  <th class="right">Increase</th>
+                  <th class="right">Salary After</th>
+                </tr>
+              </thead>
+              <tbody id="scheduleTableBody"></tbody>
+            </table>
+          </div>
+        </section>
       </main>
     </div>
 
-    <section class="tables" style="margin-top: 22px;">
-      <div class="panel">
-        <h2>Retroactive Pay Breakdown</h2>
-        <p class="helper">Gross estimate comparing the original salary against the corrected compounded salary due for each retroactive period.</p>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Retro Period</th>
-                <th class="right">Days</th>
-                <th>Raise</th>
-                <th class="right">Corrected Salary</th>
-                <th class="right">Annual Difference</th>
-                <th class="right">Gross Retro</th>
-              </tr>
-            </thead>
-            <tbody id="retroTableBody"></tbody>
-            <tfoot id="retroTableFoot"></tfoot>
-          </table>
-        </div>
-      </div>
-
-      <div class="panel">
-        <h2>Compounded Raise Schedule</h2>
-        <p class="helper">Each raise applies to the salary produced by the prior raise, not the original salary.</p>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Effective Date</th>
-                <th>Type</th>
-                <th class="right">Rate</th>
-                <th class="right">Salary Before</th>
-                <th class="right">Increase</th>
-                <th class="right">Salary After</th>
-              </tr>
-            </thead>
-            <tbody id="scheduleTableBody"></tbody>
-          </table>
-        </div>
+    <section class="panel retro-section">
+      <h2>Retroactive Pay Breakdown</h2>
+      <p class="helper">Gross estimate comparing the original salary against the corrected compounded salary due for each retroactive period.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Retro Period</th>
+              <th class="right">Days</th>
+              <th>Raise</th>
+              <th class="right">Corrected Salary</th>
+              <th class="right">Annual Difference</th>
+              <th class="right">Gross Retro</th>
+            </tr>
+          </thead>
+          <tbody id="retroTableBody"></tbody>
+          <tfoot id="retroTableFoot"></tfoot>
+        </table>
       </div>
     </section>
 
@@ -880,8 +881,8 @@
     function renderChart(model) {
       const data = model.chartData;
       const width = 1100;
-      const height = 300;
-      const margin = { top: 22, right: 36, bottom: 44, left: 74 };
+      const height = 286;
+      const margin = { top: 18, right: 28, bottom: 42, left: 70 };
       const innerWidth = width - margin.left - margin.right;
       const innerHeight = height - margin.top - margin.bottom;
 
@@ -909,7 +910,7 @@
       `).join("");
 
       const xLabels = data.map((d, i) => `
-        <text x="${x(i)}" y="${height - 17}" text-anchor="middle" font-size="12" fill="#64748b">${escapeHtml(d.label)}</text>
+        <text x="${x(i)}" y="${height - 15}" text-anchor="middle" font-size="12" fill="#64748b">${escapeHtml(d.label)}</text>
       `).join("");
 
       const visiblePoints = data.map((d, i) => `
@@ -933,10 +934,6 @@
         </circle>
       `).join("");
 
-      const last = data[data.length - 1];
-      const lastX = x(data.length - 1);
-      const lastY = y(last.salary);
-
       els.chartContainer.innerHTML = `
         <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" role="img" aria-label="Line chart showing projected salary growth">
           <rect x="0" y="0" width="${width}" height="${height}" fill="transparent" />
@@ -947,10 +944,6 @@
           <polyline points="${linePoints}" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
           ${visiblePoints}
           ${xLabels}
-          <g>
-            <rect x="${Math.max(margin.left, lastX - 134)}" y="${Math.max(10, lastY - 46)}" width="126" height="32" rx="10" fill="#172033" />
-            <text x="${Math.max(margin.left, lastX - 122)}" y="${Math.max(10, lastY - 46) + 21}" fill="white" font-size="13" font-weight="700">${currency.format(last.salary)}</text>
-          </g>
           ${hitPoints}
         </svg>
         <div class="chart-tooltip" id="chartTooltip" aria-hidden="true"></div>
