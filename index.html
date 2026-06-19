@@ -232,7 +232,7 @@
       justify-content: space-between;
       align-items: end;
       gap: 16px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .pill {
@@ -248,15 +248,54 @@
     }
 
     .chart-wrap {
+      position: relative;
       width: 100%;
-      min-height: 380px;
+      height: clamp(285px, 30vw, 335px);
+      min-height: 285px;
       border-radius: 18px;
       background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
       border: 1px solid #e5edf5;
       overflow: hidden;
     }
 
-    svg { display: block; width: 100%; height: auto; }
+    svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .chart-point-hit {
+      cursor: pointer;
+      outline: none;
+    }
+
+    .chart-tooltip {
+      position: absolute;
+      z-index: 3;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, calc(-100% - 12px));
+      background: var(--brand);
+      color: white;
+      border-radius: 12px;
+      padding: 8px 10px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.24);
+      font-size: 0.82rem;
+      font-weight: 800;
+      white-space: nowrap;
+      transition: opacity 0.08s ease;
+    }
+
+    .chart-tooltip.visible { opacity: 1; }
+
+    .chart-tooltip span {
+      display: block;
+      margin-top: 2px;
+      color: #dbeafe;
+      font-weight: 700;
+    }
 
     .tables {
       display: grid;
@@ -327,6 +366,7 @@
       .layout, .tables { grid-template-columns: 1fr; }
       .inputs-panel { position: static; }
       .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .chart-wrap { height: 320px; }
     }
 
     @media (max-width: 760px) {
@@ -335,6 +375,7 @@
       .metric-grid, .notes-grid, .two-col, .actions { grid-template-columns: 1fr; }
       .section-head { display: block; }
       .pill { margin-top: 8px; }
+      .chart-wrap { height: 285px; }
     }
 
     @media print {
@@ -344,6 +385,7 @@
       .hero, .panel, .metric-card { box-shadow: none; }
       .layout, .tables, .metric-grid, .notes-grid { display: block; }
       .panel, .metric-card { break-inside: avoid; margin-bottom: 14px; }
+      .chart-wrap { height: 300px; }
     }
   </style>
 </head>
@@ -372,8 +414,8 @@
         <div class="input-grid">
           <label>
             Current annual salary before delayed raises
-            <input id="baseSalary" type="number" min="0" step="100" value="104000" />
-            <span class="field-note">Example: 104000</span>
+            <input id="baseSalary" type="number" min="0" step="100" value="100000" />
+            <span class="field-note">Example: 100000</span>
           </label>
 
           <label>
@@ -383,6 +425,7 @@
               <option value="75000">$75,000</option>
               <option value="85000">$85,000</option>
               <option value="95000">$95,000</option>
+              <option value="100000">$100,000</option>
               <option value="104000">$104,000</option>
               <option value="115000">$115,000</option>
               <option value="125000">$125,000</option>
@@ -452,25 +495,25 @@
         <section class="metric-grid" aria-label="Summary metrics">
           <div class="metric-card">
             <div class="metric-label">Starting Salary</div>
-            <div class="metric-value" id="startingSalaryMetric">$104,000</div>
+            <div class="metric-value" id="startingSalaryMetric">$100,000</div>
             <p class="metric-note">Input salary before delayed increases</p>
           </div>
 
           <div class="metric-card">
             <div class="metric-label">Corrected Salary</div>
-            <div class="metric-value" id="correctedSalaryMetric">$109,798</div>
+            <div class="metric-value" id="correctedSalaryMetric">$105,575</div>
             <p class="metric-note" id="correctedSalaryNote">As of Jun 12, 2026</p>
           </div>
 
           <div class="metric-card">
             <div class="metric-label">Estimated Gross Retro</div>
-            <div class="metric-value" id="retroTotalMetric">$3,884.04</div>
+            <div class="metric-value" id="retroTotalMetric">$3,734.66</div>
             <p class="metric-note" id="retroTotalNote">Through Jun 11, 2026</p>
           </div>
 
           <div class="metric-card">
             <div class="metric-label">Projected Ending Salary</div>
-            <div class="metric-value" id="endingSalaryMetric">$129,205</div>
+            <div class="metric-value" id="endingSalaryMetric">$124,235</div>
             <p class="metric-note" id="endingSalaryNote">Through 2029</p>
           </div>
         </section>
@@ -739,8 +782,8 @@
     function renderChart(model) {
       const data = model.chartData;
       const width = 1100;
-      const height = 380;
-      const margin = { top: 28, right: 34, bottom: 58, left: 74 };
+      const height = 320;
+      const margin = { top: 24, right: 36, bottom: 46, left: 74 };
       const innerWidth = width - margin.left - margin.right;
       const innerHeight = height - margin.top - margin.bottom;
 
@@ -768,14 +811,28 @@
       `).join("");
 
       const xLabels = data.map((d, i) => `
-        <text x="${x(i)}" y="${height - 24}" text-anchor="middle" font-size="12" fill="#64748b">${escapeHtml(d.label)}</text>
+        <text x="${x(i)}" y="${height - 19}" text-anchor="middle" font-size="12" fill="#64748b">${escapeHtml(d.label)}</text>
       `).join("");
 
-      const points = data.map((d, i) => `
-        <g>
-          <circle cx="${x(i)}" cy="${y(d.salary)}" r="5" fill="#2563eb" stroke="white" stroke-width="2" />
+      const visiblePoints = data.map((d, i) => `
+        <circle cx="${x(i)}" cy="${y(d.salary)}" r="5" fill="#2563eb" stroke="white" stroke-width="2" />
+      `).join("");
+
+      const hitPoints = data.map((d, i) => `
+        <circle
+          class="chart-point-hit"
+          cx="${x(i)}"
+          cy="${y(d.salary)}"
+          r="17"
+          fill="transparent"
+          tabindex="0"
+          role="img"
+          aria-label="${escapeHtml(d.label)} salary ${currency.format(d.salary)}"
+          data-label="${escapeHtml(d.label)}"
+          data-salary="${escapeHtml(currency.format(d.salary))}"
+        >
           <title>${escapeHtml(d.label)}: ${currency.format(d.salary)}</title>
-        </g>
+        </circle>
       `).join("");
 
       const last = data[data.length - 1];
@@ -783,29 +840,73 @@
       const lastY = y(last.salary);
 
       els.chartContainer.innerHTML = `
-        <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Line chart showing projected salary growth">
+        <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" role="img" aria-label="Line chart showing projected salary growth">
           <rect x="0" y="0" width="${width}" height="${height}" fill="transparent" />
           ${gridLines}
           <line x1="${margin.left}" x2="${margin.left}" y1="${margin.top}" y2="${margin.top + innerHeight}" stroke="#94a3b8" stroke-width="1" />
           <line x1="${margin.left}" x2="${margin.left + innerWidth}" y1="${margin.top + innerHeight}" y2="${margin.top + innerHeight}" stroke="#94a3b8" stroke-width="1" />
           <polygon points="${areaPoints}" fill="#dbeafe" opacity="0.65" />
           <polyline points="${linePoints}" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
-          ${points}
+          ${visiblePoints}
           ${xLabels}
           <g>
-            <rect x="${Math.max(margin.left, lastX - 134)}" y="${Math.max(10, lastY - 50)}" width="126" height="34" rx="10" fill="#172033" />
-            <text x="${Math.max(margin.left, lastX - 122)}" y="${Math.max(10, lastY - 50) + 22}" fill="white" font-size="13" font-weight="700">${currency.format(last.salary)}</text>
+            <rect x="${Math.max(margin.left, lastX - 134)}" y="${Math.max(10, lastY - 48)}" width="126" height="32" rx="10" fill="#172033" />
+            <text x="${Math.max(margin.left, lastX - 122)}" y="${Math.max(10, lastY - 48) + 21}" fill="white" font-size="13" font-weight="700">${currency.format(last.salary)}</text>
           </g>
+          ${hitPoints}
         </svg>
+        <div class="chart-tooltip" id="chartTooltip" aria-hidden="true"></div>
       `;
+
+      const tooltip = els.chartContainer.querySelector("#chartTooltip");
+      const hitAreas = els.chartContainer.querySelectorAll(".chart-point-hit");
+
+      const positionTooltip = (target, event) => {
+        const rect = els.chartContainer.getBoundingClientRect();
+        let left;
+        let top;
+
+        if (event && typeof event.clientX === "number" && typeof event.clientY === "number") {
+          left = event.clientX - rect.left;
+          top = event.clientY - rect.top;
+        } else {
+          left = (Number(target.getAttribute("cx")) / width) * rect.width;
+          top = (Number(target.getAttribute("cy")) / height) * rect.height;
+        }
+
+        tooltip.style.left = `${Math.min(Math.max(left, 72), rect.width - 72)}px`;
+        tooltip.style.top = `${Math.max(top, 42)}px`;
+      };
+
+      const showTooltip = (target, event) => {
+        tooltip.innerHTML = `${target.dataset.label}<span>${target.dataset.salary}</span>`;
+        positionTooltip(target, event);
+        tooltip.classList.add("visible");
+      };
+
+      const hideTooltip = () => {
+        tooltip.classList.remove("visible");
+      };
+
+      hitAreas.forEach(point => {
+        point.addEventListener("mouseenter", event => showTooltip(event.currentTarget, event));
+        point.addEventListener("mousemove", event => positionTooltip(event.currentTarget, event));
+        point.addEventListener("mouseleave", hideTooltip);
+        point.addEventListener("focus", event => showTooltip(event.currentTarget));
+        point.addEventListener("blur", hideTooltip);
+      });
+    }
+
+    function csvEscape(value) {
+      const text = String(value ?? "");
+      if (text.includes('"') || text.includes(",") || text.includes("\n")) {
+        return '"' + text.replaceAll('"', '""') + '"';
+      }
+      return text;
     }
 
     function downloadCsv(filename, rows) {
-      const csv = rows.map(row => row.map(value => {
-        const text = String(value ?? "");
-        return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
-      }).join(",")).join("\n");
-
+      const csv = rows.map(row => row.map(csvEscape).join(",")).join("\n");
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
